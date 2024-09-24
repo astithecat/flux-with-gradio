@@ -1,0 +1,39 @@
+---
+version: "2.0"
+services:
+  flux-with-gradio:
+    image: astithecat/flux-with-gradio:0.0.4
+    expose:
+      - port: 7860
+        as: 7860
+        to:
+          - global: true
+    env:
+      - GRADIO_SERVER_NAME=0.0.0.0
+profiles:
+  compute:
+    flux-with-gradio:
+      resources:
+        cpu:
+          units: 4
+        memory:
+          size: 32GB
+        storage:
+          - size: 50GB
+        gpu:
+          units: 1
+          attributes:
+            vendor:
+              nvidia:
+                - model: rtxa6000
+  placement:
+    dcloud:
+      pricing:
+        flux-with-gradio:
+          denom: uakt
+          amount: 10000
+deployment:
+  flux-with-gradio:
+    dcloud:
+      profile: flux-with-gradio
+      count: 1
